@@ -1,0 +1,6 @@
+@page "/login"
+@rendermode InteractiveServer
+@using FormSubmission.AdminPortal.Models
+@inject FormSubmission.AdminPortal.Services.SubmissionApiService Api
+@inject FormSubmission.AdminPortal.Services.AuthStateService Auth
+<div class="card"><h2>Admin Login</h2><div class="form-row"><label>Username</label><InputText @bind-Value="model.Username" /></div><div class="form-row"><label>Password</label><InputText type="password" @bind-Value="model.Password" /></div><button @onclick="LoginAsync">Login</button>@if(Auth.IsLoggedIn){<p class="success">Logged in as @Auth.Username</p><a href="/submissions">Go to submissions</a>}@if(error is not null){<p class="error">@error</p>}</div>@code{private LoginRequest model=new("admin","Admin@123");private string? error;private async Task LoginAsync(){error=null;var r=await Api.LoginAsync(model);if(r is null){error="Login failed. Check API.";return;}Auth.SetLogin(r.Token,r.Username,r.Role);}}
